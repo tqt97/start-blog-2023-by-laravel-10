@@ -2,19 +2,22 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\PostResource\Pages;
-use App\Filament\Resources\PostResource\RelationManagers;
-use App\Models\Post;
 use Closure;
+use Carbon\Carbon;
 use Filament\Forms;
-use Filament\Resources\Form;
-use Filament\Resources\Resource;
-use Filament\Resources\Table;
+use App\Models\Post;
 use Filament\Tables;
-use Filament\Tables\Filters\TernaryFilter;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Str;
+use Filament\Resources\Form;
+use Filament\Resources\Table;
+use Filament\Resources\Resource;
+use Filament\Tables\Filters\Filter;
+use Filament\Forms\Components\DatePicker;
+use Illuminate\Database\Eloquent\Builder;
+use Filament\Tables\Filters\TernaryFilter;
+use App\Filament\Resources\PostResource\Pages;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\PostResource\RelationManagers;
 
 class PostResource extends Resource
 {
@@ -89,11 +92,13 @@ class PostResource extends Resource
                     ->searchable(),
                 // Tables\Columns\TextColumn::make('slug'),
                 // Tables\Columns\TextColumn::make('body'),
-                Tables\Columns\SelectColumn::make('active')
-                    ->options([
-                        '0' => 'Inactive',
-                        '1' => 'Active',
-                    ]),
+                // Tables\Columns\SelectColumn::make('active')
+                //     ->options([
+                //         '0' => 'Inactive',
+                //         '1' => 'Active',
+                //     ]),
+                Tables\Columns\ToggleColumn::make('active'),
+
                 Tables\Columns\TextColumn::make('published_at')
                     ->dateTime()
                     ->sortable(),
@@ -118,7 +123,48 @@ class PostResource extends Resource
                     ),
                 TernaryFilter::make('active')
                     ->label('Active')
-                    ->indicator('Active')
+                    ->indicator('Active'),
+                Filter::make('published')
+                    ->form([
+                        Forms\Components\DatePicker::make('published_from'),
+                        Forms\Components\DatePicker::make('published_until'),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['published_from'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('published_at', '>=', $date),
+                            )
+                            ->when(
+                                $data['published_until'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('published_at', '<=', $date),
+                            );
+                    })
+                    ->indicateUsing(function (array $data): ?string {
+                        if (!$data['published_from'] || !$data['published_until']) {
+                            return null;
+                        }
+
+                        return 'Published from ' . Carbon::parse($data['published_from'])->toFormattedDateString() . ' to ' . Carbon::parse($data['published_until'])->toFormattedDateString();
+                    }),
+                Filter::make('created_at')
+                    ->form([
+                        DatePicker::make('from'),
+                        DatePicker::make('until'),
+                    ])
+                    ->indicateUsing(function (array $data): array {
+                        $indicators = [];
+
+                        if ($data['from'] ?? null) {
+                            $indicators['from'] = 'Created from ' . Carbon::parse($data['from'])->toFormattedDateString();
+                        }
+
+                        if ($data['until'] ?? null) {
+                            $indicators['until'] = 'Created until ' . Carbon::parse($data['until'])->toFormattedDateString();
+                        }
+
+                        return $indicators;
+                    })
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),

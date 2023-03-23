@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('name', 512);
             $table->boolean('active')->default(false);
             $table->string('slug', 512);
-            $table->string('description', 1024);
+            $table->string('description', 1024)->nullable();
             $table->unsignedBigInteger('parent_id')->nullable();
             $table->foreign('parent_id')->references('id')->on('categories');
             $table->string('banner',512)->nullable();

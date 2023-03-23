@@ -12,7 +12,6 @@ use Filament\Resources\Table;
 use Illuminate\Support\Carbon;
 use Filament\Resources\Resource;
 use Filament\Tables\Filters\Filter;
-use Illuminate\Database\Eloquent\Model;
 use Filament\Forms\Components\TextInput;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Tables\Filters\TernaryFilter;
@@ -111,11 +110,11 @@ class CategoryResource extends Resource
                 Tables\Columns\ToggleColumn::make('active'),
                 Tables\Columns\TextColumn::make('updated_at')
                     ->sortable()
-                    ->dateTime('d-m-Y H:i A')
+                    ->dateTime('d-m-Y H:i')
                     ->toggleable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->sortable()
-                    ->dateTime('d-m-Y H:i A')
+                    ->dateTime('d-m-Y H:i')
                     ->toggleable(),
                 Tables\Columns\TextColumn::make('deleted_at')
                     ->sortable()
@@ -152,7 +151,7 @@ class CategoryResource extends Resource
             ])
             ->actions([
                 Tables\Actions\ActionGroup::make([
-                    Tables\Actions\ViewAction::make()->tooltip('Edit this blog post'),
+                    Tables\Actions\ViewAction::make(),
                     Tables\Actions\ReplicateAction::make()
                         ->excludeAttributes(['name', 'slug'])
                         ->form([
@@ -168,7 +167,7 @@ class CategoryResource extends Resource
                                 ->unique()
                                 ->maxLength(512),
                         ])
-                        ->beforeReplicaSaved(function (Model $replica, array $data): void {
+                        ->beforeReplicaSaved(function (Category $replica, array $data): void {
                             $replica->fill($data);
                         }),
                     Tables\Actions\EditAction::make(),

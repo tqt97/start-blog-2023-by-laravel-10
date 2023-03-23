@@ -13,8 +13,15 @@ return new class extends Migration
     {
         Schema::create('categories', function (Blueprint $table) {
             $table->id();
-            $table->string('title', 512);
+            $table->string('name', 512);
+            $table->boolean('active')->default(false);
             $table->string('slug', 512);
+            $table->string('description', 1024);
+            $table->unsignedBigInteger('parent_id')->nullable();
+            $table->foreign('parent_id')->references('id')->on('categories');
+            $table->string('banner',512)->nullable();
+            $table->string('meta_title', 255)->nullable();
+            $table->string('meta_description', 255)->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

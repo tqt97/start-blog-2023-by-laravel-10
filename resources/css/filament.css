@@ -1,0 +1,6 @@
+@import '../../vendor/filament/filament/resources/css/app.css';
+
+* {
+    /* font-family: "Rubik", sans-serif; */
+    font-size: 1.02rem;
+}

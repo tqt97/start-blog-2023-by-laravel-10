@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Filament\Tables\Filters\TernaryFilter;
 use App\Filament\Resources\CategoryResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\CategoryResource\Widgets\CategoryOverview;
 
 class CategoryResource extends Resource
 {
@@ -107,7 +108,14 @@ class CategoryResource extends Resource
             ->columns([
                 Tables\Columns\ImageColumn::make('banner')->toggleable(),
                 Tables\Columns\TextColumn::make('name')->sortable()->searchable(),
-                Tables\Columns\ToggleColumn::make('active'),
+                // Tables\Columns\ToggleColumn::make('active'),
+                Tables\Columns\IconColumn::make('active')->boolean()
+                    ->action(function ($record, $column) {
+                        $name = $column->getName();
+                        $record->update([
+                            $name => !$record->$name
+                        ]);
+                    }),
                 Tables\Columns\TextColumn::make('updated_at')
                     ->sortable()
                     ->dateTime('d-m-Y H:i')
@@ -205,5 +213,17 @@ class CategoryResource extends Resource
             ->withoutGlobalScopes([
                 SoftDeletingScope::class,
             ]);
+    }
+    public static function getWidgets(): array
+    {
+        return [
+            CategoryOverview::class,
+        ];
+    }
+    protected function getHeaderWidgets(): array
+    {
+        return [
+            CategoryOverview::class,
+        ];
     }
 }

@@ -105,7 +105,13 @@ class PostResource extends Resource
                     ->sortable()
                     ->searchable()
                     ->wrap(),
-                Tables\Columns\ToggleColumn::make('active'),
+                Tables\Columns\IconColumn::make('active')->boolean()
+                    ->action(function ($record, $column) {
+                        $name = $column->getName();
+                        $record->update([
+                            $name => !$record->$name
+                        ]);
+                    }),
                 Tables\Columns\TextColumn::make('published_at')
                     ->dateTime('d-m-Y H:i')
                     ->sortable()->toggleable(),
@@ -198,12 +204,12 @@ class PostResource extends Resource
                         }),
                     Tables\Actions\EditAction::make(),
                     Tables\Actions\DeleteAction::make(),
-                        // ->action(fn (Collection $records) => $records->each->delete())
-                        // ->deselectRecordsAfterCompletion()
-                        // ->requiresConfirmation()
-                        // ->modalHeading('Delete posts')
-                        // ->modalSubheading('Are you sure you\'d like to delete these posts? This cannot be undone.')
-                        // ->modalButton('Yes, delete them'),
+                    // ->action(fn (Collection $records) => $records->each->delete())
+                    // ->deselectRecordsAfterCompletion()
+                    // ->requiresConfirmation()
+                    // ->modalHeading('Delete posts')
+                    // ->modalSubheading('Are you sure you\'d like to delete these posts? This cannot be undone.')
+                    // ->modalButton('Yes, delete them'),
                     Tables\Actions\ForceDeleteAction::make(),
                     Tables\Actions\RestoreAction::make(),
                 ]),

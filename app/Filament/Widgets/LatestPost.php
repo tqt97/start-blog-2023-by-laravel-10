@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Builder;
 
 class LatestPost extends BaseWidget
 {
-    protected static ?int $sort = 3;
+    protected static ?int $sort = 4;
 
     protected int | string | array $columnSpan = 'full';
     protected function getTableQuery(): Builder
@@ -27,7 +27,8 @@ class LatestPost extends BaseWidget
         return [
             ImageColumn::make('thumbnail')
                 ->sortable()
-                ->searchable(),
+                ->searchable()
+                ->toggleable(),
             TextColumn::make('title')
                 ->sortable()
                 ->searchable()

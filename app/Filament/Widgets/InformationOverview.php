@@ -11,6 +11,8 @@ use Filament\Widgets\StatsOverviewWidget\Card;
 class InformationOverview extends BaseWidget
 {
     protected static ?int $sort = 1;
+    // protected int | string | array $columnSpan = '2';
+
 
     protected function getCards(): array
     {

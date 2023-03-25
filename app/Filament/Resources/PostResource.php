@@ -90,17 +90,21 @@ class PostResource extends Resource
                         ->relationship('categories', 'name')
                         ->preload()
                         ->searchable(),
-                Forms\Components\Select::make('tags')
-                    ->translateLabel()
-                    ->multiple()
-                    ->relationship('tags', 'name')
-                    ->preload()
-                    ->searchable(),
+                    Forms\Components\Select::make('tags')
+                        ->translateLabel()
+                        ->multiple()
+                        ->relationship('tags', 'name')
+                        ->preload()
+                        ->searchable(),
                 ])->columnSpan(4),
                 Forms\Components\Card::make()->schema([
                     Forms\Components\TextInput::make('meta_title')->translateLabel()
+                        ->hint(fn ($state, $component) => 'left: ' . $component->getMaxLength() - strlen($state) . ' characters')
+                        ->lazy()
                         ->maxLength(255),
                     Forms\Components\TextInput::make('meta_description')->translateLabel()
+                        ->hint(fn ($state, $component) => 'left: ' . $component->getMaxLength() - strlen($state) . ' characters')
+                        ->lazy()
                         ->maxLength(255),
                 ])->columnSpan(12),
             ])->columns(12);
@@ -115,8 +119,8 @@ class PostResource extends Resource
                     ->searchable()
                     ->wrap(),
                 Tables\Columns\IconColumn::make('active')
-                ->extraAttributes(['class' => 'flex justify-center'])
-                ->boolean()
+                    ->extraAttributes(['class' => 'flex justify-center'])
+                    ->boolean()
                     ->action(function ($record, $column) {
                         $name = $column->getName();
                         $record->update([

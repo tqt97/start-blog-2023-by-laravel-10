@@ -29,6 +29,9 @@ class UserResource extends Resource
 
     protected static ?int $navigationSort = 0;
 
+    protected static ?string $recordTitleAttribute = 'name';
+
+
     protected static function getNavigationBadge(): ?string
     {
         return static::getModel()::count();

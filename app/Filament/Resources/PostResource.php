@@ -3,9 +3,9 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\PostResource\Pages;
+use App\Filament\Resources\PostResource\RelationManagers\TagsRelationManager;
 use App\Models\Post;
 use Awcodes\Curator\Components\Forms\CuratorPicker;
-use Awcodes\Curator\Components\Tables\CuratorColumn;
 use Carbon\Carbon;
 use Closure;
 use Filament\Forms;
@@ -15,9 +15,9 @@ use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
 use Filament\Tables\Filters\Filter;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TernaryFilter;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Str;
 
@@ -38,6 +38,9 @@ class PostResource extends Resource
     {
         return static::getModel()::count() > 10 ? 'warning' : 'primary';
     }
+
+    protected static ?string $recordTitleAttribute = 'title';
+
 
     public static function form(Form $form): Form
     {
@@ -87,6 +90,12 @@ class PostResource extends Resource
                         ->relationship('categories', 'name')
                         ->preload()
                         ->searchable(),
+                Forms\Components\Select::make('tags')
+                    ->translateLabel()
+                    ->multiple()
+                    ->relationship('tags', 'name')
+                    ->preload()
+                    ->searchable(),
                 ])->columnSpan(4),
                 Forms\Components\Card::make()->schema([
                     Forms\Components\TextInput::make('meta_title')->translateLabel()
@@ -101,13 +110,13 @@ class PostResource extends Resource
     {
         return $table
             ->columns([
-                // Tables\Columns\ImageColumn::make('thumbnail')->toggleable(),
-                // CuratorColumn::make('thumbnail')->size(40),
                 Tables\Columns\TextColumn::make('title')
                     ->sortable()
                     ->searchable()
                     ->wrap(),
-                Tables\Columns\IconColumn::make('active')->boolean()
+                Tables\Columns\IconColumn::make('active')
+                ->extraAttributes(['class' => 'flex justify-center'])
+                ->boolean()
                     ->action(function ($record, $column) {
                         $name = $column->getName();
                         $record->update([
@@ -137,6 +146,8 @@ class PostResource extends Resource
                 TernaryFilter::make('active')
                     ->label('Active')
                     ->indicator('Active'),
+                SelectFilter::make('user')->label('Author')->relationship('user', 'name'),
+                SelectFilter::make('categories')->label('Category')->relationship('categories', 'name'),
                 Filter::make('published_at')
                     ->form([
                         Forms\Components\DatePicker::make('published_from'),
@@ -206,12 +217,6 @@ class PostResource extends Resource
                         }),
                     Tables\Actions\EditAction::make(),
                     Tables\Actions\DeleteAction::make(),
-                    // ->action(fn (Collection $records) => $records->each->delete())
-                    // ->deselectRecordsAfterCompletion()
-                    // ->requiresConfirmation()
-                    // ->modalHeading('Delete posts')
-                    // ->modalSubheading('Are you sure you\'d like to delete these posts? This cannot be undone.')
-                    // ->modalButton('Yes, delete them'),
                     Tables\Actions\ForceDeleteAction::make(),
                     Tables\Actions\RestoreAction::make(),
                 ]),
@@ -242,7 +247,7 @@ class PostResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            TagsRelationManager::class
         ];
     }
 

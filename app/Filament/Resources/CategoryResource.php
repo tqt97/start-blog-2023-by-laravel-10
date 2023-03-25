@@ -2,22 +2,23 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Resources\CategoryResource\Pages;
+use App\Filament\Resources\CategoryResource\RelationManagers\PostsRelationManager;
+use App\Filament\Resources\CategoryResource\Widgets\CategoryOverview;
+use App\Models\Category;
 use Closure;
 use Filament\Forms;
-use Filament\Tables;
-use App\Models\Category;
-use Illuminate\Support\Str;
-use Filament\Resources\Form;
-use Filament\Resources\Table;
-use Illuminate\Support\Carbon;
-use Filament\Resources\Resource;
-use Filament\Tables\Filters\Filter;
 use Filament\Forms\Components\TextInput;
-use Illuminate\Database\Eloquent\Builder;
+use Filament\Resources\Form;
+use Filament\Resources\Resource;
+use Filament\Resources\Table;
+use Filament\Tables;
+use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\TernaryFilter;
-use App\Filament\Resources\CategoryResource\Pages;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use App\Filament\Resources\CategoryResource\Widgets\CategoryOverview;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Str;
 
 class CategoryResource extends Resource
 {
@@ -36,6 +37,8 @@ class CategoryResource extends Resource
     {
         return static::getModel()::count() > 10 ? 'warning' : 'primary';
     }
+
+    protected static ?string $recordTitleAttribute = 'name';
 
     public static function form(Form $form): Form
     {
@@ -71,16 +74,7 @@ class CategoryResource extends Resource
                         ->helperText('Default size image is 1200px x 600px.')
                         ->preserveFilenames()
                         ->image()
-                        // ->minSize(512)
-                        // ->maxSize(1024)
-                        // ->imageResizeMode('cover')
-                        // ->imageCropAspectRatio('16:9')
-                        // ->imageResizeTargetWidth('1920')
-                        // ->imageResizeTargetHeight('1080')
-                        // ->imagePreviewHeight('250')
                         ->loadingIndicatorPosition('left')
-                        // ->panelAspectRatio('2:1')
-                        // ->panelLayout('integrated')
                         ->removeUploadedFileButtonPosition('right')
                         ->uploadButtonPosition('left')
                         ->uploadProgressIndicatorPosition('left'),
@@ -109,7 +103,7 @@ class CategoryResource extends Resource
                 Tables\Columns\ImageColumn::make('banner')->toggleable(),
                 Tables\Columns\TextColumn::make('name')->sortable()->searchable(),
                 // Tables\Columns\ToggleColumn::make('active'),
-                Tables\Columns\IconColumn::make('active')->boolean()
+                Tables\Columns\IconColumn::make('active')->extraAttributes(['class' => 'flex justify-center'])->boolean()
                     ->action(function ($record, $column) {
                         $name = $column->getName();
                         $record->update([
@@ -194,7 +188,7 @@ class CategoryResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            PostsRelationManager::class
         ];
     }
 

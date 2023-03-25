@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\PostResource\Pages;
 use App\Filament\Resources\PostResource\RelationManagers\TagsRelationManager;
+use App\Models\Category;
 use App\Models\Post;
 use Awcodes\Curator\Components\Forms\CuratorPicker;
 use Carbon\Carbon;
@@ -151,7 +152,17 @@ class PostResource extends Resource
                     ->label('Active')
                     ->indicator('Active'),
                 SelectFilter::make('user')->label('Author')->relationship('user', 'name'),
-                SelectFilter::make('categories')->label('Category')->relationship('categories', 'name'),
+                SelectFilter::make('categories')->label('Category')->relationship('categories', 'name')
+                    ->default(
+                        Category::query()
+                            ->latest('created_at')
+                            ->pluck('id') ?
+                            Category::query()
+                            ->latest('created_at')
+                            ->pluck('id')
+                            ->first() :
+                            null
+                    ),
                 Filter::make('published_at')
                     ->form([
                         Forms\Components\DatePicker::make('published_from'),

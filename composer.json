@@ -18,6 +18,8 @@
         "laravel/tinker": "^2.8",
         "pxlrbt/filament-spotlight": "^0.3.6",
         "ryangjchandler/filament-navigation": "^0.5.0",
+        "shuvroroy/filament-spatie-laravel-health": "^1.6",
+        "spatie/laravel-health": "^1.22",
         "z3d0x/filament-fabricator": "^1.1"
     },
     "require-dev": {

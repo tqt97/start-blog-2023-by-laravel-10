@@ -48,7 +48,7 @@
 
 <body class="filament-fabricator-body">
     {{ \Filament\Facades\Filament::renderHook('filament-fabricator.body.start') }}
-
+    <x-navigation />
     {{ $slot }}
 
     {{ \Filament\Facades\Filament::renderHook('filament-fabricator.scripts.start') }}

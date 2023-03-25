@@ -2,22 +2,24 @@
 
 namespace App\Filament\Resources;
 
-use Closure;
-use Carbon\Carbon;
-use Filament\Forms;
-use App\Models\Post;
-use Filament\Tables;
-use Illuminate\Support\Str;
-use Filament\Resources\Form;
-use Filament\Resources\Table;
-use Filament\Resources\Resource;
-use Filament\Tables\Filters\Filter;
-use Filament\Forms\Components\DatePicker;
-use Illuminate\Database\Eloquent\Builder;
-use Filament\Tables\Filters\TernaryFilter;
 use App\Filament\Resources\PostResource\Pages;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Models\Post;
+use Awcodes\Curator\Components\Forms\CuratorPicker;
+use Awcodes\Curator\Components\Tables\CuratorColumn;
+use Carbon\Carbon;
+use Closure;
+use Filament\Forms;
+use Filament\Forms\Components\DatePicker;
+use Filament\Resources\Form;
+use Filament\Resources\Resource;
+use Filament\Resources\Table;
+use Filament\Tables;
+use Filament\Tables\Filters\Filter;
+use Filament\Tables\Filters\TernaryFilter;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Str;
 
 class PostResource extends Resource
 {
@@ -63,15 +65,14 @@ class PostResource extends Resource
                 ])->columnSpan(8),
 
                 Forms\Components\Card::make()->schema([
-                    Forms\Components\FileUpload::make('thumbnail')
-                        ->translateLabel()
-                        ->helperText('Default size image is 1200px x 600px.')
-                        ->preserveFilenames()
-                        ->image()
-                        ->loadingIndicatorPosition('left')
-                        ->removeUploadedFileButtonPosition('right')
-                        ->uploadButtonPosition('left')
-                        ->uploadProgressIndicatorPosition('left'),
+                    CuratorPicker::make('thumbnail')
+                        ->label('Image')
+                        ->buttonLabel('Upload image')
+                        ->color('secondary') // defaults to primary
+                        ->outlined(false) // defaults to true
+                        ->size('md') // defaults to md
+                        ->pathGenerator(DatePathGenerator::class | UserPathGenerator::class) // see path generators below
+                        ->preserveFilenames(),
                     Forms\Components\Toggle::make('active')->translateLabel()
                         ->required()
                         ->onIcon('heroicon-s-lightning-bolt')
@@ -100,7 +101,8 @@ class PostResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\ImageColumn::make('thumbnail')->toggleable(),
+                // Tables\Columns\ImageColumn::make('thumbnail')->toggleable(),
+                // CuratorColumn::make('thumbnail')->size(40),
                 Tables\Columns\TextColumn::make('title')
                     ->sortable()
                     ->searchable()

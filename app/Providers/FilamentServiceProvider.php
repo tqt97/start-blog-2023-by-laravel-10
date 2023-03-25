@@ -7,6 +7,7 @@ use Filament\Navigation\NavigationGroup;
 use Illuminate\Foundation\Vite;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\HtmlString;
+use Z3d0X\FilamentFabricator\Facades\FilamentFabricator;
 
 class FilamentServiceProvider extends ServiceProvider
 {
@@ -24,26 +25,32 @@ class FilamentServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Filament::serving(function () {
-            // Filament::registerViteTheme('resources/css/filament.css');
             // Using Vite
             Filament::registerTheme(
                 app(Vite::class)('resources/css/filament.css'),
             );
 
-            // Filament::registerScripts([
-            //     asset('js/my-script.js'),
-            // ]);
-            // Filament::registerScripts([
-            //     'https://cdn.jsdelivr.net/npm/@ryangjchandler/alpine-tooltip@0.x.x/dist/cdn.min.js',
-            // ], true);
-            // Filament::registerStyles([
-            //     'https://unpkg.com/tippy.js@6/dist/tippy.css',
-            //     asset('css/my-styles.css'),
+            FilamentFabricator::pushMeta([
+                new HtmlString('<link rel="manifest" href="/site.webmanifest" />'),
+            ]);
+
+            //Register scripts
+            // FilamentFabricator::registerScripts([
+            //     'https://unpkg.com/browse/tippy.js@6.3.7/dist/tippy.esm.js', //external url
+            //     // mix('js/app.js'), //laravel-mix
+            //     app(Vite::class)('resources/css/app.js'), //vite
+            //     asset('js/app.js'), // asset from public folder
             // ]);
 
-            // Filament::pushMeta([
-            //     new HtmlString('<link rel="manifest" href="/site.webmanifest" />'),
-            // ]);
+            //Register styles
+            FilamentFabricator::registerStyles([
+                // 'https://unpkg.com/tippy.js@6/dist/tippy.css', //external url
+                // mix('css/app.css'), //laravel-mix
+                app(Vite::class)('resources/css/app.css'), //vite
+                asset('css/app.css'), // asset from public folder
+            ]);
+
+            // FilamentFabricator::favicon(asset('favicon.ico'));
 
             Filament::registerNavigationGroups([
                 NavigationGroup::make()
@@ -51,7 +58,6 @@ class FilamentServiceProvider extends ServiceProvider
                     ->icon('heroicon-o-book-open')
                     ->collapsed(),
             ]);
-
         });
     }
 }

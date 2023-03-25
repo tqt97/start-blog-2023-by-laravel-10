@@ -29,10 +29,10 @@ class LatestPost extends BaseWidget
     protected function getTableColumns(): array
     {
         return [
-            ImageColumn::make('thumbnail')
-                ->sortable()
-                ->searchable()
-                ->toggleable(),
+            // ImageColumn::make('thumbnail')
+            //     ->sortable()
+            //     ->searchable()
+            //     ->toggleable(),
             TextColumn::make('title')
                 ->sortable()
                 ->searchable()

@@ -186,6 +186,7 @@ return [
          * Package Service Providers...
          */
         \App\Providers\FilamentServiceProvider::class,
+        \App\Providers\FilamentFabricatorServiceProvider::class,
         /*
          * Application Service Providers...
          */

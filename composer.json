@@ -6,6 +6,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.1",
+        "awcodes/filament-curator": "^2.4",
         "bezhansalleh/filament-shield": "^2.4",
         "filament/filament": "^2.0",
         "filament/spatie-laravel-media-library-plugin": "^2.0",
@@ -14,7 +15,8 @@
         "laravel/framework": "^10.0",
         "laravel/sanctum": "^3.2",
         "laravel/tinker": "^2.8",
-        "ryangjchandler/filament-navigation": "^0.5.0"
+        "ryangjchandler/filament-navigation": "^0.5.0",
+        "z3d0x/filament-fabricator": "^1.1"
     },
     "require-dev": {
         "doctrine/dbal": "^3.6",

@@ -64,8 +64,18 @@ class PostResource extends Resource
                         ->maxLength(512)
                         ->translateLabel()
                         ->helperText('Use to define unique of post. Default set when change value of name. You can customize it'),
-                    Forms\Components\Textarea::make('summary')->translateLabel(),
-                    Forms\Components\RichEditor::make('content')->translateLabel(),
+                    Forms\Components\Textarea::make('summary')->translateLabel()
+                        ->hint(function (?string $state) {
+                            $readingMinutes = Str::readingMinutes($state);
+                            return $readingMinutes . ' min read';
+                        })
+                        ->lazy(),
+                    Forms\Components\RichEditor::make('content')->translateLabel()
+                        ->hint(function (?string $state) {
+                            $readingMinutes = Str::readingMinutes($state);
+                            return $readingMinutes . ' min read';
+                        })
+                        ->lazy(),
                 ])->columnSpan(8),
 
                 Forms\Components\Card::make()->schema([

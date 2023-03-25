@@ -61,7 +61,13 @@ class CategoryResource extends Resource
                         ->required()
                         ->maxLength(512)
                         ->unique(ignorable: fn ($record) => $record),
-                    Forms\Components\Textarea::make('description')->label('Description'),
+                    Forms\Components\Textarea::make('description')->label('Description')
+                        ->hint(function (?string $state) {
+                            $readingMinutes = Str::readingMinutes($state);
+
+                            return $readingMinutes . ' min read';
+                        })
+                        ->lazy(),
                 ])->columnSpan(8),
                 Forms\Components\Card::make()->schema([
                     Forms\Components\Select::make('parent_id')

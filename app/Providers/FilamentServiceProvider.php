@@ -57,6 +57,10 @@ class FilamentServiceProvider extends ServiceProvider
                     ->label('Blog')
                     ->icon('heroicon-o-book-open')
                     ->collapsed(),
+                NavigationGroup::make()
+                    ->label('Settings')
+                    ->icon('heroicon-o-cog')
+                    ->collapsed(),
             ]);
         });
     }
